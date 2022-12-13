@@ -10,15 +10,50 @@
 </head>
 <body>
 <?php
-
 if($_FILES){
     $directory = "Uploads/";
+    $file = $directory.basename($_FILES['uploadedFile']['name']);
+    $fileType = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+    $uploadSuccess = true;
+    if($_FILES['uploadedFile']['error'] != 0){
+        echo("Chyba uploadu");
+        $uploadSuccess = false;
+    }
+    elseif (file_exists($file)){
+        echo("Soubor již existuje");
+        $uploadSuccess = false;
+    }
+    elseif($_FILES["uploadedFile"]['size'] > 7000000){
+        echo("Soubor je příliš velký");
+        $uploadSuccess = false;
+    }
+    /*
+    elseif($fileType != "audio/*" || $fileType != "image/*" || $fileType != "video/*"){
+        echo("Soubor není správný typ");
+        $uploadSuccess = false;
+    }
+    */
+
+    if($uploadSuccess){
+        $uploadedFiles = glob($directory."*");
+        foreach ($uploadedFiles as $uploadedFile){
+            if(is_file($uploadedFile)){
+                unlink($uploadedFile);
+            }
+        }
+        if(move_uploaded_file($_FILES['uploadedFile']['tmp_name'], $file)){
+            echo("Soubor ".basename($_FILES['uploadedFile']['name'])." byl uložen");
+        }
+        else{
+            echo("Nepodařilo se uložit soubor");
+        }
+    }
 }
 ?>
 <div class="container">
-    <form class="mb-3" method="post" action="" enctype="multipart/form-data">
+    <form class="mb-3" method="post" action="" enctype="multipart/form-data" >
         <label for="formFile" class="form-label">Nahrajte soubor</label>
-        <input class="form-control" type="file" id="formFile" name="uploadedFile">
+        <input class="form-control" type="file" id="formFile" name="uploadedFile" accept="audio/*, video/*, image/*">
         <br>
         <input type="submit" value="Nahrát" name="submit" class="btn-primary btn">
     </form>
