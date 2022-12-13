@@ -41,6 +41,7 @@ if($_FILES){
     }
 
     if($uploadSuccess){
+        //Nechci zaspamovat školní server
         $uploadedFiles = glob($directory."*");
         foreach ($uploadedFiles as $uploadedFile){
             if(is_file($uploadedFile)){
