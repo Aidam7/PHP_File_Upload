@@ -15,6 +15,14 @@ if($_FILES){
     $file = $directory.basename($_FILES['uploadedFile']['name']);
     $fileType = strtolower(pathinfo($file, PATHINFO_EXTENSION));
     $uploadSuccess = true;
+    if($fileType == "png" || $fileType == "jpg" || $fileType == "jpeg"){
+        $image = $directory.basename($_FILES['uploadedFile']['name']);
+        echo("<br><div class='container'><image src='$image'/></div>");
+    }
+    elseif ($fileType == "mp4"){
+        $video = $directory.basename($_FILES['uploadedFile']['name']);
+        echo("<br><div class='container'><video autoplay controls> <source src='$video' type='video/mp4'></video></div>");
+    }
     if($_FILES['uploadedFile']['error'] != 0){
         echo("Chyba uploadu");
         $uploadSuccess = false;
@@ -27,12 +35,10 @@ if($_FILES){
         echo("Soubor je příliš velký");
         $uploadSuccess = false;
     }
-    /*
-    elseif($fileType != "audio/*" || $fileType != "image/*" || $fileType != "video/*"){
-        echo("Soubor není správný typ");
+    elseif($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png" && $fileType != "mp4"){
+        echo "Jsou jen podporovány soubory typu jpg, jpeg, png a mp4";
         $uploadSuccess = false;
     }
-    */
 
     if($uploadSuccess){
         $uploadedFiles = glob($directory."*");
